@@ -35,7 +35,7 @@ func ParseYaml(Yaml string) (res Deploy, err error) {
 	res.URL = d["url"]
 	res.Lang = d["lang"]
 
-	return
+	return res, nil
 }
 
 func main() {
