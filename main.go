@@ -1,9 +1,14 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 
 	"gopkg.in/yaml.v3"
+)
+
+var (
+	ErrYaml = errors.New("yaml is empty")
 )
 
 var deploy = `
@@ -21,7 +26,11 @@ func ParseYaml(Yaml string) (res Deploy, err error) {
 	d := make(map[string]string)
 	err = yaml.Unmarshal([]byte(y), &d)
 	if err != nil {
-		return
+		return res, err
+	}
+
+	if d["url"] == "" || d["lang"] == "" {
+		return res, ErrYaml
 	}
 	res.URL = d["url"]
 	res.Lang = d["lang"]
@@ -31,11 +40,11 @@ func ParseYaml(Yaml string) (res Deploy, err error) {
 
 func main() {
 
-	fmt.Printf("元のyaml:\n%+v\n\n", deploy)
+	fmt.Printf("元のyaml:%+v\n", deploy)
 	d, err := ParseYaml(deploy)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Printf("関数から返ってきたデータ\n%v\n%v", d.URL, d.Lang)
+	fmt.Printf("関数から返ってきたデータ:\n%v\n%v", d.URL, d.Lang)
 }
