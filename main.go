@@ -8,7 +8,8 @@ import (
 )
 
 var (
-	ErrYaml = errors.New("yaml is empty")
+	ErrURL  = errors.New("url is empty")
+	ErrLang = errors.New("lang is empty")
 )
 
 var deploy = `
@@ -29,11 +30,17 @@ func ParseYaml(Yaml string) (res Deploy, err error) {
 		return res, err
 	}
 
-	if d["url"] == "" || d["lang"] == "" {
-		return res, ErrYaml
+	url, ok := d["url"]
+	if !ok {
+		return res, ErrURL
 	}
-	res.URL = d["url"]
-	res.Lang = d["lang"]
+	lang, ok := d["lang"]
+	if !ok {
+		return res, ErrLang
+	}
+
+	res.URL = url
+	res.Lang = lang
 
 	return res, nil
 }
